@@ -1,4 +1,4 @@
-# Ramblings of a Programmer
+# Ramblings of a Programmer.
 
 Welcome to my blog, where I mostly post about things that I do, and how I do them.
 

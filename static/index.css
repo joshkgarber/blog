@@ -1,6 +1,15 @@
+:root {
+    --theme-background-dark: #121812;
+    --theme-darkest: #379237;
+    --theme-dark: #54B435;
+    --theme-accent: #F0FF42;
+    --theme-light: #82CD47;
+    --theme-text: #F0FFF0;
+}
+
 body {
     background-color: #000517;
-    color: #f0e6d1;
+    color: var(--theme-text);
     font-family: "Inconsolata", monospace;
     line-height: 1.7;
     margin: 0;
@@ -20,7 +29,7 @@ h3,
 h4,
 h5,
 h6 {
-    color: #FFFFF0;
+    color: var(--theme-text);
     margin-top: 24px;
     margin-bottom: 16px;
     text-shadow: 2px 2px 4px #000;
@@ -45,14 +54,14 @@ h6 {
 }
 
 a {
-    color: #e0a96d;
+    color: var(--theme-light);
     text-decoration: none;
-    border-bottom: 2px solid #e0a96d;
+    border-bottom: 2px solid var(--theme-light);
 }
 
 a:hover {
-    color: #f4a261;
-    border-color: #f4a261;
+    color: var(--theme-accent);
+    border-color: var(--theme-accent);
 }
 
 ul,
@@ -61,9 +70,9 @@ ol {
 }
 
 code {
-    background-color: #3c3c42;
+    background-color: var(--theme-background-dark);
     border-radius: 6px;
-    color: #e9c46a;
+    color: var(--theme-light);
     padding: 0.4em 0.6em;
     font-family: "Inconsolata", monospace;
 }
@@ -73,7 +82,7 @@ pre code {
 }
 
 pre {
-    background-color: #3c3c42;
+    background-color: var(--theme-background-dark);
     border-radius: 6px;
     padding: 1em;
     overflow: auto;
@@ -81,8 +90,8 @@ pre {
 }
 
 blockquote {
-    background-color: #2e2c35;
-    border-left: 4px solid #8d99ae;
+    background-color: var(--theme-dark);
+    border-left: 4px solid var(--theme-accent);
     padding-left: 2em;
     margin-left: 0;
     padding-top: 0.5em;
@@ -96,7 +105,7 @@ img {
     max-width: 100%;
     height: auto;
     border-radius: 6px;
-    border: 3px solid #3c3c42;
+    border: 3px solid var(--theme-accent);
     box-shadow: 3px 3px 6px #000;
 }
 
@@ -106,14 +115,14 @@ img {
 }
 
 ::-webkit-scrollbar-track {
-    background: #1f1c25;
+    background: var(--theme-dark);
     border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #3c3c42;
+    background-color: var(--theme-darkest);
     border-radius: 6px;
-    border: 3px solid #1f1c25;
+    border: 3px solid var(--theme-light);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -128,4 +137,3 @@ img {
 ::-webkit-scrollbar-corner {
     background: #1f1c25;
 }
-

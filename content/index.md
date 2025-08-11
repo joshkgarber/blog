@@ -4,7 +4,7 @@ Welcome to my blog, where I mostly post about things that I do, and how I do the
 
 ## Dev Environment
 
-**Linux** - WIP
+[Linux](posts/linux)
 
 **Tmux Config** - WIP
 

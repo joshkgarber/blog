@@ -1,40 +1,54 @@
-# Ramblings of a Programmer.
+# Josh K Garber Docs
 
-Welcome to my blog, where I mostly post about things that I do, and how I do them.
+What I do... and how!
 
-## Dev Environment
+## Dev Env
 
 [Linux](posts/linux)
 
-**Tmux Config** - WIP
+**Tmux** - WIP
 
-**Vim Config** - WIP
+**Vim** - WIP
 
-**Keyd Config** - WIP
+**Keyd** - WIP
 
-## Web Dev
+## Tools
 
-**Flask Template Project** - WIP
+**HTML** - WIP
 
-**Apache2 on Ubuntu Server** - WIP 
+**CSS** - WIP
 
-**Web Components** - WIP
+**JavaScript** - WIP
+
+**Python** - WIP
+
+**Flask** - WIP
+
+**hCaptcha** - WIP
+
+**SSH** - WIP
+
+**Digital Ocean** - WIP
+
+**Apache2** - WIP 
 
 ## Projects
 
+**Docs** (this website) - WIP
+
 **InContext** - WIP
+
+**Lieutenant** - WIP
 
 **Kumpel** - WIP
 
-**Bootsweeper** - WIP
+**Alpaca Arcade** - WIP
 
-## Happiness
+## Misc
 
 **Termux** - WIP
 
-**ssh** - WIP
-
 **WebDAV** - WIP
 
-**hCaptcha** - WIP
+[FFmpeg](posts/happiness/ffmpeg)
 

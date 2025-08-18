@@ -142,7 +142,7 @@ class TestSplitNodes(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
         msg = str(e.exception)
-        self.assertEqual(msg, "invalid markdown syntax")
+        self.assertEqual(msg, "invalid markdown syntax: ['This is text with an invalid ', 'italic part in it']")
 
     def test_invalid_2(self):
         nodes = [
@@ -152,7 +152,7 @@ class TestSplitNodes(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             new_nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
         msg = str(e.exception)
-        self.assertEqual(msg, "invalid markdown syntax")
+        self.assertEqual(msg, "invalid markdown syntax: ['This is text with an invalid ', 'italic part in it']")
 
     def test_delim_bold_and_italic(self):
         node = TextNode("This is **bold** and this is __italic__", TextType.PLAIN)
@@ -230,17 +230,6 @@ class TestSplitNodes(unittest.TestCase):
             ],
             new_nodes,
         )
-
-
-    # def test_split_image_exception(self):
-    #     node = TextNode(
-    #         "![image](https://i.imgur.com/zjjcJKZ.png",
-    #         TextType.PLAIN,
-    #     )
-    #     with self.assertRaises(ValueError) as e:
-    #         new_nodes = split_nodes_image([node])
-    #     msg = str(e.exception)
-    #     self.assertEqual(msg, "invalid markdown, image section not closed.")
 
 
     def test_split_image_single(self):

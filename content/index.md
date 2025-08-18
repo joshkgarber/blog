@@ -4,7 +4,7 @@ What I do... and how!
 
 ## Dev Env
 
-[Linux](posts/linux)
+[Linux](linux)
 
 **Tmux** - WIP
 
@@ -50,5 +50,5 @@ What I do... and how!
 
 **WebDAV** - WIP
 
-[FFmpeg](posts/happiness/ffmpeg)
+[FFmpeg](misc/ffmpeg)
 

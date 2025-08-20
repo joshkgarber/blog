@@ -26,6 +26,8 @@ def block_to_html_node(block):
             return quote_to_html_node(block)
         case BlockType.CODE:
             return codeblock_to_html_node(block)
+        case BlockType.TABLE:
+            return table_to_html_node(block)
         case _:
             raise ValueError("Unsupported blocktype")
 

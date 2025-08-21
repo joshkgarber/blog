@@ -255,6 +255,21 @@ static_text = "**This** is not bold, and _this_ is not italic."
         )
 
 
+    def test_table(self):
+        md = """
+| **abc** | [def](https://def.com) |
+| --- | --- |
+| 123 | 456 |
+| **789** | `0`12 |
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><table><thead><tr><th><b>abc</b></th><th><a href=\"https://def.com\">def</a></th></tr></thead><tbody><tr><td>123</td><td>456</td></tr><tr><td><b>789</b></td><td><code>0</code>12</td></tr></tbody></table></div>"
+        )
+
+
     def test_try_to_cover_everything(self):
         md = """
 # Hello World with a [Link](https://example.com)

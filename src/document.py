@@ -97,3 +97,25 @@ def codeblock_to_html_node(block):
     return ParentNode("pre", [htmlnode])
 
 
+def table_to_html_node(block):
+    rows = block.split("\n")
+    headers = rows[0][2:-2].split(" | ")
+    tr_node_children = []
+    for header in headers:
+        th_node = ParentNode("th", text_to_html(header))
+        tr_node_children.append(th_node)
+    tr_node = ParentNode("tr", tr_node_children)
+    thead_node = ParentNode("thead", [tr_node])
+    rows = rows[2:]
+    tr_nodes = []
+    for row in rows:
+        row = row[2:-2].split(" | ")
+        tr_node_children = []
+        for cell in row:
+            td_node = ParentNode("td", text_to_html(cell))
+            tr_node_children.append(td_node)
+        tr_node = ParentNode("tr", tr_node_children)
+        tr_nodes.append(tr_node)
+    tbody_node = ParentNode("tbody", tr_nodes)
+    return ParentNode("table", [thead_node, tbody_node])
+

@@ -16,6 +16,7 @@ class BlockType(Enum):
     QUOTE = "quote"
     UL = "ul"
     OL = "ol"
+    TABLE = "table"
 
 
 def block_to_blocktype(block):
@@ -37,6 +38,9 @@ def block_to_blocktype(block):
     is_ol = check_is_ol(lines)
     if is_ol:
         return BlockType.OL
+    is_table = check_is_table(lines)
+    if is_table:
+        return BlockType.TABLE
     return BlockType.PARAGRAPH
 
 
@@ -53,3 +57,32 @@ def check_is_ol(lines):
         return False
     return True
 
+
+def check_is_table(lines):
+    # Check pattern for the header row
+    header_pattern = r"^(\| .+ )+\|$"
+    valid_table_header = re.fullmatch(header_pattern, lines[0])
+    if not valid_table_header:
+        return False
+    column_count_pattern = r"\| .+ "
+    # Save the number of columns
+    column_count = len(re.findall(column_count_pattern, lines[0]))
+    # Check pattern for the separator row
+    separator_pattern = r"^(\| -+ )+\|$"
+    valid_table_separator = re.fullmatch(separator_pattern, lines[1])
+    if not valid_table_separator:
+        return False
+    separator_column_count = len(re.findall(column_count_pattern, lines[1]))
+    if column_count != separator_column_count:
+        return False
+    # Check patter for remaining rows
+    row_pattern = header_pattern
+    for line in lines[2:]:
+        valid_table_row = re.fullmatch(row_pattern, line)
+        if not valid_table_row:
+            return False
+        row_column_count = len(re.findall(column_count_pattern, line))
+        if column_count != row_column_count:
+            return False
+    # Valid table
+    return True

@@ -80,6 +80,16 @@ This is the same paragraph on a new line
         self.assertEqual(block_to_blocktype(block), BlockType.OL)
 
 
+    def test_block_to_blocktype_table(self):
+        block = "| a b c | d e f |\n| - | - |\n| g h i | j k l |"
+        self.assertEqual(block_to_blocktype(block), BlockType.TABLE)
+
+
+    def test_block_to_blocktype_table_invalid(self):
+        block = "| a b c | d e f |\n| - | |\n| g h i | j k l |"
+        self.assertEqual(block_to_blocktype(block), BlockType.PARAGRAPH)
+
+
     def test_block_to_blocktype_ol_false(self):
         block = "1. item one\n3. item two\n4. item three"
         self.assertEqual(block_to_blocktype(block), BlockType.PARAGRAPH)

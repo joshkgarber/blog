@@ -1,8 +1,10 @@
 # Linux
 
-## Bash Scripting
+## Bash
 
-[Basic Stuff](basic_bash_scripting)
+[Basic Scripting](basic_bash_scripting)
+
+[ANSI Colors](ansi_colors)
 
 ## lsd
 

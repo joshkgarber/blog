@@ -20,4 +20,4 @@ if [[ "$DIR_PATH_PUBLIC" != *"/docs" ]]; then
     fi
 fi
 
-python3 src/main.py "https://jkgarber.com/docs/" "$1"
+python3 src/main.py "/docs/" "$1"

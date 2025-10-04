@@ -4,7 +4,7 @@ import re
 
 def markdown_to_blocks(markdown):
     code_block_pattern = r"(```.*?```)"
-    code_block_split = re.split(code_block_pattern, markdown)
+    code_block_split = re.split(code_block_pattern, markdown, flags=re.S)
     code_block_pattern = r"^```.*?```$"
     blocks = []
     for split in code_block_split:

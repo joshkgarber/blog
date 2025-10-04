@@ -50,6 +50,29 @@ This is the same paragraph on a new line
         )
 
 
+    def test_markdown_to_blocks_codeblock(self):
+        markdown = """
+This is a paragraph.
+
+```py
+print("This is a codeblock")
+
+print("This is still in the codeblock")
+```
+
+This is another paragraph.
+"""
+        blocks = markdown_to_blocks(markdown)
+        self.assertListEqual(
+            [
+                "This is a paragraph.",
+                "```py\nprint(\"This is a codeblock\")\n\nprint(\"This is still in the codeblock\")\n```",
+                "This is another paragraph."
+            ],
+            blocks
+        )
+
+
     def test_block_to_blocktype_p(self):
         block = "This is **bolded** paragraph"
         self.assertEqual(block_to_blocktype(block), BlockType.PARAGRAPH)
@@ -61,7 +84,7 @@ This is the same paragraph on a new line
 
 
     def test_block_to_blocktype_code(self):
-        block = "```py\nprint(\"hello world\")\n```"
+        block = "```py\n# Prints \"hello world\" to the console\n\nprint(\"hello world\")\n```"
         self.assertEqual(block_to_blocktype(block), BlockType.CODE)
 
 

@@ -255,6 +255,22 @@ static_text = "**This** is not bold, and _this_ is not italic."
         )
 
 
+    def test_codeblock_with_empty_line(self):
+        md = """
+```py
+print("hello world")
+
+static_text = "**This** is not bold, and _this_ is not italic."
+```
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>print(\"hello world\")\n\nstatic_text = \"**This** is not bold, and _this_ is not italic.\"</code></pre></div>"
+        )
+
+
     def test_table(self):
         md = """
 | **abc** | [def](https://def.com) |

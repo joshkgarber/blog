@@ -3,7 +3,15 @@ import re
 
 
 def markdown_to_blocks(markdown):
-    blocks = markdown.split("\n\n")
+    code_block_pattern = r"(```.*?```)"
+    code_block_split = re.split(code_block_pattern, markdown)
+    code_block_pattern = r"^```.*?```$"
+    blocks = []
+    for split in code_block_split:
+        if re.fullmatch(code_block_pattern, split, re.S):
+            blocks.append(split)
+        else:
+            blocks.extend(split.split("\n\n"))
     blocks = list(map(lambda x: x.strip(), blocks))
     blocks = [block for block in blocks if block]
     return blocks

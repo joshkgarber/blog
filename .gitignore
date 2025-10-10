@@ -3,3 +3,4 @@ __pycache__/
 drafts/
 docs/
 content/
+.baseline_hashes

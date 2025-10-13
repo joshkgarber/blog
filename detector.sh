@@ -99,6 +99,26 @@ case "$COMMAND" in
         # The output are lines only in file 1 (baseline hashes).
         # We process these lines to find files whose names (field 2) are not in the current list.
         DELETED_LINES=$(comm -23 <(sort -k 2 "$BASELINE_FILE") <(sort -k 2 "$TEMP_FILE"))
+
+        if [ -n "$DELETED_LINES" ]; then
+            CHANGES_FOUND=true
+            echo ":: DELETED FILES ::"
+            echo "$DELETED_LINES" | awk '{print "  - " $2}'
+        fi
+
+        # B. Find Added Files (Files in current scan but not in baseline)
+        # comm -13 compares two sorted files:
+        # -1: suppress lines only in file 1 (baseline hashes)
+        # -3: suppress lines common to both files
+        # The output are lines only in file 2 (new hashes).
+        ADDED_LINES=$(comm -13 <(sort -k 2 "$BASELINE_FILE") <(sort -k 2 "$TEMP_FILE"))
+
+        if [ -n "$ADDED_LINES" ]; then
+            CHANGES_FOUND=true
+            echo ":: ADDED FILES ::"
+            echo "$ADDED_LINES" | awk '{print "  + " $2}'
+        fi
+
         ;;
 
     *)

@@ -17,6 +17,20 @@ TEMP_FILE="./.current_hashes_temp"
 # Helper Functions
 # ===============================================
 
+# Function to generate SHA256 hashes for all non-directory files
+generate_hashes() {
+    # Find all regular files in the target directory (excluding the baseline file itself)
+    # Use -type f to ensure we only hash files, not directories.
+    # We pipe the paths to sha256sum to generate the hash, and then we format the output
+    # to be sortable (hash and then filepath).
+    find "$TARGET_DIR" -name '*\.md' -type f -print0 | while IFS= read -r -d $'\0' file; do
+        # Ignore the baseline file itself if it happens to be inside the target directory
+        if [[ "$file" != "$BASELINE_FILE" ]]; then
+            sha256sum "$file"
+        fi
+    done | sort -k 2 > "$1" # Sort by filename (field 2) for reliable comparison
+}
+
 # Function to display the usage instructions
 show_usage() {
     echo "Usage: $0 [init|check|reset]"
@@ -27,20 +41,6 @@ show_usage() {
     echo ""
     echo "Monitoring directory: $TARGET_DIR"
     echo "Baseline file: $BASELINE_FILE"
-}
-
-# Function to generate SHA256 hashes for all non-directory files
-generate_hashes() {
-    # Find all regular files in the target directory (excluding the baseline file itself)
-    # Use -type f to ensure we only hash files, not directories.
-    # We pipe the paths to sha256sum to generate the hash, and then we format the output
-    # to be sortable (hash and then filepath).
-    find "$TARGET_DIR" -type f -print0 | while IFS= read -r -d $'\0' file; do
-        # Ignore the baseline file itself if it happens to be inside the target directory
-        if [[ "$file" != "$BASELINE_FILE" ]]; then
-            sha256sum "$file"
-        fi
-    done | sort -k 2 > "$1" # Sort by filename (field 2) for reliable comparison
 }
 
 # ===============================================
@@ -118,7 +118,30 @@ case "$COMMAND" in
             echo ":: ADDED FILES ::"
             echo "$ADDED_LINES" | awk '{print "  + " $2}'
         fi
+        
+        # C. Find Modified Files (Files in both lists, but with different hashes)
+        # comm -3 suppresses common lines. The remaining lines are differences.
+        # We need to filter this result further to ensure the *filename* (field 2) is common.
+        # Since we already handled added/deleted above, the remaining differences
+        # after filtering by filename must be content modifications.
+        MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $2}' "$BASELINE_FILE") | awk '{print $NF}' | sort | uniq)
 
+        if [ -n "$MODIFIED_LINES" ]; then
+            CHANGES_FOUND=true
+            echo ":: MODIFIED FILES (Content Changed) ::"
+            # Extract only the filenames for display
+            echo "$MODIFIED_LINES" | awk '{print "  ! " $1}'
+        fi
+
+        if [ "$CHANGES_FOUND" = false ]; then
+            echo "No changes detected."
+        fi
+
+        echo "--------------------------"
+
+        # 2. Update baseline for the next run if no errors occurred
+        mv "$TEMP_FILE" "$BASELINE_FILE"
+        echo "Baseline updated for next check."
         ;;
 
     *)

@@ -78,6 +78,29 @@ case "$COMMAND" in
         echo "Baseline reset successfully. Current state saved."
         ;;
 
+    check)
+        echo "--> Checking $TARGET_DIR for changes against $BASELINE_FILE..."
+
+        if [ ! -f "$BASELINE_FILE" ]; then
+            echo "Error: Baseline file not found. Please run '$0 init' first."
+            exit 1
+        fi
+
+        # 1. Generate current hashes and store them temporarily
+        generate_hashes "$TEMP_FILE"
+
+        echo "--- Changes Detected ---"
+        CHANGES_FOUND=false
+
+        # A. Find Deleted Files (Files in baseline but not in current scan)
+        # comm -23 compares two sorted files:
+        # -2: suppress lines only in file 2 (new hashes)
+        # -3: suppress lines common to both files
+        # The output are lines only in file 1 (baseline hashes).
+        # We process these lines to find files whose names (field 2) are not in the current list.
+        DELETED_LINES=$(comm -23 <(sort -k 2 "$BASELINE_FILE") <(sort -k 2 "$TEMP_FILE"))
+        ;;
+
     *)
         show_usage
         exit 1

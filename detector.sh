@@ -28,7 +28,7 @@ generate_hashes() {
         if [[ "$file" != "$BASELINE_FILE" ]]; then
             sha256sum "$file"
         fi
-    done | sort -k 2 > "$1" # Sort by filename (field 2) for reliable comparison
+    done | sort -k 2 | awk '{print $2 "\t"  $1}' > "$1" # Sort by filename (field 2) for reliable comparison
 }
 
 # Function to display the usage instructions
@@ -98,12 +98,12 @@ case "$COMMAND" in
         # -3: suppress lines common to both files
         # The output are lines only in file 1 (baseline hashes).
         # We process these lines to find files whose names (field 2) are not in the current list.
-        DELETED_LINES=$(comm -23 <(sort -k 2 "$BASELINE_FILE") <(sort -k 2 "$TEMP_FILE"))
+        DELETED_LINES=$(comm -23 <(sort "$BASELINE_FILE") <(sort "$TEMP_FILE"))
 
         if [ -n "$DELETED_LINES" ]; then
             CHANGES_FOUND=true
             echo ":: DELETED FILES ::"
-            echo "$DELETED_LINES" | awk '{print "  - " $2}'
+            echo "$DELETED_LINES" | awk '{print "  - " $1}'
         fi
 
         # B. Find Added Files (Files in current scan but not in baseline)
@@ -111,12 +111,12 @@ case "$COMMAND" in
         # -1: suppress lines only in file 1 (baseline hashes)
         # -3: suppress lines common to both files
         # The output are lines only in file 2 (new hashes).
-        ADDED_LINES=$(comm -13 <(sort -k 2 "$BASELINE_FILE") <(sort -k 2 "$TEMP_FILE"))
+        ADDED_LINES=$(comm -13 <(sort "$BASELINE_FILE") <(sort "$TEMP_FILE"))
 
         if [ -n "$ADDED_LINES" ]; then
             CHANGES_FOUND=true
             echo ":: ADDED FILES ::"
-            echo "$ADDED_LINES" | awk '{print "  + " $2}'
+            echo "$ADDED_LINES" | awk '{print "  + " $1}'
         fi
         
         # C. Find Modified Files (Files in both lists, but with different hashes)
@@ -124,13 +124,15 @@ case "$COMMAND" in
         # We need to filter this result further to ensure the *filename* (field 2) is common.
         # Since we already handled added/deleted above, the remaining differences
         # after filtering by filename must be content modifications.
-        MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $2}' "$BASELINE_FILE") | awk '{print $NF}' | sort | uniq)
+        MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $1}' "$BASELINE_FILE") | awk '{print $1}' | sort | uniq)
 
         if [ -n "$MODIFIED_LINES" ]; then
             CHANGES_FOUND=true
             echo ":: MODIFIED FILES (Content Changed) ::"
             # Extract only the filenames for display
             echo "$MODIFIED_LINES" | awk '{print "  ! " $1}'
+            mv "$TEMP_FILE" "$BASELINE_FILE"
+            echo "Baseline updated for next check."
         fi
 
         if [ "$CHANGES_FOUND" = false ]; then
@@ -138,10 +140,6 @@ case "$COMMAND" in
         fi
 
         echo "--------------------------"
-
-        # 2. Update baseline for the next run if no errors occurred
-        mv "$TEMP_FILE" "$BASELINE_FILE"
-        echo "Baseline updated for next check."
         ;;
 
     *)

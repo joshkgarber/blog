@@ -98,7 +98,7 @@ case "$COMMAND" in
         # -3: suppress lines common to both files
         # The output are lines only in file 1 (baseline hashes).
         # We process these lines to find files whose names (field 2) are not in the current list.
-        DELETED_LINES=$(comm -23 <(sort "$BASELINE_FILE") <(sort "$TEMP_FILE"))
+        DELETED_LINES=$(comm -23 <(sort "$BASELINE_FILE" | awk '{print $1}') <(sort "$TEMP_FILE" | awk '{print $1}'))
 
         if [ -n "$DELETED_LINES" ]; then
             CHANGES_FOUND=true
@@ -111,7 +111,7 @@ case "$COMMAND" in
         # -1: suppress lines only in file 1 (baseline hashes)
         # -3: suppress lines common to both files
         # The output are lines only in file 2 (new hashes).
-        ADDED_LINES=$(comm -13 <(sort "$BASELINE_FILE") <(sort "$TEMP_FILE"))
+        ADDED_LINES=$(comm -13 <(sort "$BASELINE_FILE" | awk '{print $1}') <(sort "$TEMP_FILE" | awk '{print $1}'))
 
         if [ -n "$ADDED_LINES" ]; then
             CHANGES_FOUND=true
@@ -124,22 +124,22 @@ case "$COMMAND" in
         # We need to filter this result further to ensure the *filename* (field 2) is common.
         # Since we already handled added/deleted above, the remaining differences
         # after filtering by filename must be content modifications.
-        MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $1}' "$BASELINE_FILE") | awk '{print $1}' | sort | uniq)
+        MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $1}' "$BASELINE_FILE") | grep -Ff <(awk '{print $1}' "$TEMP_FILE") | awk '{print $1}' | sort | uniq)
 
         if [ -n "$MODIFIED_LINES" ]; then
             CHANGES_FOUND=true
             echo ":: MODIFIED FILES (Content Changed) ::"
             # Extract only the filenames for display
             echo "$MODIFIED_LINES" | awk '{print "  ! " $1}'
-            mv "$TEMP_FILE" "$BASELINE_FILE"
-            echo "Baseline updated for next check."
         fi
 
         if [ "$CHANGES_FOUND" = false ]; then
             echo "No changes detected."
+        else
+            mv "$TEMP_FILE" "$BASELINE_FILE"
+            echo "--------------------------"
+            echo "Baseline updated for next check."
         fi
-
-        echo "--------------------------"
         ;;
 
     *)

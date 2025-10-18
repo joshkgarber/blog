@@ -19,16 +19,12 @@ TEMP_FILE="./.current_hashes_temp"
 
 # Function to generate SHA256 hashes for all non-directory files
 generate_hashes() {
-    # Find all regular files in the target directory (excluding the baseline file itself)
-    # Use -type f to ensure we only hash files, not directories.
-    # We pipe the paths to sha256sum to generate the hash, and then we format the output
-    # to be sortable (hash and then filepath).
     find "$TARGET_DIR" -name '*\.md' -type f -print0 | while IFS= read -r -d $'\0' file; do
         # Ignore the baseline file itself if it happens to be inside the target directory
         if [[ "$file" != "$BASELINE_FILE" ]]; then
             sha256sum "$file"
         fi
-    done | sort -k 2 | awk '{print $2 "\t"  $1}' > "$1" # Sort by filename (field 2) for reliable comparison
+    done | sort -k 2 | awk '{print $2 "\t" $1}' > "$1" # Sort by filename (field 2) for reliable comparison
 }
 
 # Function to display the usage instructions
@@ -63,7 +59,6 @@ case "$COMMAND" in
             exit 1
         fi
         
-        # Create the target directory if it doesn't exist
         mkdir -p "$TARGET_DIR"
 
         generate_hashes "$BASELINE_FILE"
@@ -79,66 +74,39 @@ case "$COMMAND" in
         ;;
 
     check)
-        echo "--> Checking $TARGET_DIR for changes against $BASELINE_FILE..."
-
         if [ ! -f "$BASELINE_FILE" ]; then
             echo "Error: Baseline file not found. Please run '$0 init' first."
             exit 1
         fi
 
-        # 1. Generate current hashes and store them temporarily
+        # Generate current hashes and store them temporarily
         generate_hashes "$TEMP_FILE"
 
-        echo "--- Changes Detected ---"
         CHANGES_FOUND=false
 
-        # A. Find Deleted Files (Files in baseline but not in current scan)
-        # comm -23 compares two sorted files:
-        # -2: suppress lines only in file 2 (new hashes)
-        # -3: suppress lines common to both files
-        # The output are lines only in file 1 (baseline hashes).
-        # We process these lines to find files whose names (field 2) are not in the current list.
         DELETED_LINES=$(comm -23 <(sort "$BASELINE_FILE" | awk '{print $1}') <(sort "$TEMP_FILE" | awk '{print $1}'))
 
         if [ -n "$DELETED_LINES" ]; then
             CHANGES_FOUND=true
-            echo ":: DELETED FILES ::"
-            echo "$DELETED_LINES" | awk '{print "  - " $1}'
+            echo "$DELETED_LINES" | awk '{print "-\t" $1}'
         fi
 
-        # B. Find Added Files (Files in current scan but not in baseline)
-        # comm -13 compares two sorted files:
-        # -1: suppress lines only in file 1 (baseline hashes)
-        # -3: suppress lines common to both files
-        # The output are lines only in file 2 (new hashes).
         ADDED_LINES=$(comm -13 <(sort "$BASELINE_FILE" | awk '{print $1}') <(sort "$TEMP_FILE" | awk '{print $1}'))
 
         if [ -n "$ADDED_LINES" ]; then
             CHANGES_FOUND=true
-            echo ":: ADDED FILES ::"
-            echo "$ADDED_LINES" | awk '{print "  + " $1}'
+            echo "$ADDED_LINES" | awk '{print "+\t" $1}'
         fi
         
-        # C. Find Modified Files (Files in both lists, but with different hashes)
-        # comm -3 suppresses common lines. The remaining lines are differences.
-        # We need to filter this result further to ensure the *filename* (field 2) is common.
-        # Since we already handled added/deleted above, the remaining differences
-        # after filtering by filename must be content modifications.
         MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $1}' "$BASELINE_FILE") | grep -Ff <(awk '{print $1}' "$TEMP_FILE") | awk '{print $1}' | sort | uniq)
 
         if [ -n "$MODIFIED_LINES" ]; then
             CHANGES_FOUND=true
-            echo ":: MODIFIED FILES (Content Changed) ::"
-            # Extract only the filenames for display
-            echo "$MODIFIED_LINES" | awk '{print "  ! " $1}'
+            echo "$MODIFIED_LINES" | awk '{print "!\t" $1}'
         fi
 
-        if [ "$CHANGES_FOUND" = false ]; then
-            echo "No changes detected."
-        else
+        if [ "$CHANGES_FOUND" = true ]; then
             mv "$TEMP_FILE" "$BASELINE_FILE"
-            echo "--------------------------"
-            echo "Baseline updated for next check."
         fi
         ;;
 

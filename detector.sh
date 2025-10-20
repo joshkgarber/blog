@@ -50,6 +50,7 @@ if [ -z "$1" ]; then
 fi
 
 COMMAND="$1"
+DIR_PATH_PUBLIC="$2"
 
 case "$COMMAND" in
     init)

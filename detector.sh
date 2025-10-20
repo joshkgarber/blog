@@ -29,10 +29,10 @@ generate_hashes() {
 
 # Function to display the usage instructions
 show_usage() {
-    echo "Usage: $0 [init|check|reset]"
+    echo "Usage: $0 <init|check|reset> [dir_path_public]"
     echo ""
     echo "  init    : Creates the initial baseline of hashes. Must be run first."
-    echo "  check   : Compares current files against the baseline to report changes."
+    echo "  check   : Compares current files against the baseline to detect changes. dir_path_public must be provided."
     echo "  reset   : Overwrites the baseline with the current state, ignoring all changes."
     echo ""
     echo "Monitoring directory: $TARGET_DIR"
@@ -79,6 +79,11 @@ case "$COMMAND" in
             exit 1
         fi
 
+        if [ -z "$2" ]; then
+            show_usage
+            exit 1
+        fi
+
         # Generate current hashes and store them temporarily
         generate_hashes "$TEMP_FILE"
 
@@ -106,6 +111,18 @@ case "$COMMAND" in
         fi
 
         if [ "$CHANGES_FOUND" = true ]; then
+            if [[ "$DIR_PATH_PUBLIC" != *"/docs" ]]; then
+                read -r -p "dir choice doesn't end with \"/docs\". Are you sure? [Y/n] " SURE
+                if [ "$SURE" == "n" ]; then
+                    echo "Cancelled."
+                    if [ -f "$TEMP_FILE" ]; then
+                        rm "$TEMP_FILE"
+                    fi
+                    exit 0
+                fi
+            fi
+            echo "Building pages since changes were detected."
+            python3 src/main.py "/docs/" "$2"
             mv "$TEMP_FILE" "$BASELINE_FILE"
         fi
         ;;

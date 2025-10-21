@@ -23,7 +23,7 @@ class TestDocumentConversion(unittest.TestCase):
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><h3>Hello World with a <a href=\"https://example.com\">Link</a></h3></div>"
+            "<div><h3>Hello World with a <a href=\"https://example.com\"><span>Link</span></a></h3></div>"
         )
 
 
@@ -94,7 +94,7 @@ They are _artificial_.
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><h1>New Document</h1><p>Hello World, my name is <b>computer</b>. Computers are <a href=\"https://machines.com\">machines</a>.</p><p>They are <i>artificial</i>.</p></div>"
+            "<div><h1>New Document</h1><p>Hello World, my name is <b>computer</b>. Computers are <a href=\"https://machines.com\"><span>machines</span></a>.</p><p>They are <i>artificial</i>.</p></div>"
         )
 
 
@@ -282,7 +282,7 @@ static_text = "**This** is not bold, and _this_ is not italic."
         html = node.to_html()
         self.assertEqual(
             html,
-            "<div><table><thead><tr><th><b>abc</b></th><th><a href=\"https://def.com\">def</a></th></tr></thead><tbody><tr><td>123</td><td>456</td></tr><tr><td><b>789</b></td><td><code>0</code>12</td></tr></tbody></table></div>"
+            "<div><table><thead><tr><th><b>abc</b></th><th><a href=\"https://def.com\"><span>def</span></a></th></tr></thead><tbody><tr><td>123</td><td>456</td></tr><tr><td><b>789</b></td><td><code>0</code>12</td></tr></tbody></table></div>"
         )
 
 
@@ -318,7 +318,7 @@ static_text = "**This** is not bold, and _this_ is not italic."
         html = node.to_html()
         self.assertEqual(
             html,
-        "<div><h1>Hello World with a <a href=\"https://example.com\">Link</a></h1><p>My name is <b>computer</b>. Computers are <a href=\"https://machines.com\">machines</a>.</p><p>They are <i>artificial</i>.</p><p><img src=\"https://i.imgur.com/computer.png\" alt=\"A computer\"/></p><h2>Lists over here</h2><ul><li>Take out the trash</li><li>Make dinner</li><li>Water the plants</li></ul><ol><li>Take out the <b>trash</b></li><li>Make dinner</li><li>Water the plants</li></ol><pre><code>print(\"hello world\")\nstatic_text = \"**This** is not bold, and _this_ is not italic.\"</code></pre><blockquote>This is the best! ... Continued</blockquote></div>"
+        "<div><h1>Hello World with a <a href=\"https://example.com\"><span>Link</span></a></h1><p>My name is <b>computer</b>. Computers are <a href=\"https://machines.com\"><span>machines</span></a>.</p><p>They are <i>artificial</i>.</p><p><img src=\"https://i.imgur.com/computer.png\" alt=\"A computer\"/></p><h2>Lists over here</h2><ul><li>Take out the trash</li><li>Make dinner</li><li>Water the plants</li></ul><ol><li>Take out the <b>trash</b></li><li>Make dinner</li><li>Water the plants</li></ol><pre><code>print(\"hello world\")\nstatic_text = \"**This** is not bold, and _this_ is not italic.\"</code></pre><blockquote>This is the best! ... Continued</blockquote></div>"
         )
 
 

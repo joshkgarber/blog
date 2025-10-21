@@ -35,6 +35,10 @@ def block_to_html_node(block):
 def text_to_html(text):
     textnodes = text_to_textnodes(text)
     html = [text_node_to_html_node(textnode) for textnode in textnodes]
+    for node in html:
+        if node.tag == "a":
+            children = text_to_html(node.value)
+            node.value = ParentNode("span", children).to_html()
     return html
 
 

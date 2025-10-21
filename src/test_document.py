@@ -27,6 +27,18 @@ class TestDocumentConversion(unittest.TestCase):
         )
 
 
+    def test_complex_heading_link_bold(self):
+        md = """
+### Hello World with a [**Link**](https://example.com)
+"""
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h3>Hello World with a <a href=\"https://example.com\"><span><b>Link</b></span></a></h3></div>"
+        )
+
+
     def test_simple_paragraph(self):
         md = """
 Hello World, my name is computer. Computers are machines.

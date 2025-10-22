@@ -39,6 +39,6 @@ fi
 
 echo "Syncing content to server..."
 
-rsync -rvht --progress --delete-after $SRC $DEST
+rsync -rvht --progress --delete-after --exclude="*.swp" $SRC $DEST
 
 exit 0

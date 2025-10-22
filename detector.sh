@@ -85,6 +85,9 @@ case "$COMMAND" in
             exit 1
         fi
 
+        # Log run
+        echo -e "$(date +%F_%T)\tDETECTING CHANGES"
+
         # Generate current hashes and store them temporarily
         generate_hashes "$TEMP_FILE"
 
@@ -94,21 +97,21 @@ case "$COMMAND" in
 
         if [ -n "$DELETED_LINES" ]; then
             CHANGES_FOUND=true
-            echo "$DELETED_LINES" | awk '{print "-\t" $1}'
+            echo "$DELETED_LINES" | awk '{print strftime("%F_%T", systime()) "\tDEL\t" $1}'
         fi
 
         ADDED_LINES=$(comm -13 <(sort "$BASELINE_FILE" | awk '{print $1}') <(sort "$TEMP_FILE" | awk '{print $1}'))
 
         if [ -n "$ADDED_LINES" ]; then
             CHANGES_FOUND=true
-            echo "$ADDED_LINES" | awk '{print "+\t" $1}'
+            echo "$ADDED_LINES" | awk '{print strftime("%F_%T", systime()) "\tADD\t" $1}'
         fi
         
         MODIFIED_LINES=$(comm -3 "$BASELINE_FILE" "$TEMP_FILE" | grep -Ff <(awk '{print $1}' "$BASELINE_FILE") | grep -Ff <(awk '{print $1}' "$TEMP_FILE") | awk '{print $1}' | sort | uniq)
 
         if [ -n "$MODIFIED_LINES" ]; then
             CHANGES_FOUND=true
-            echo "$MODIFIED_LINES" | awk '{print "!\t" $1}'
+            echo "$MODIFIED_LINES" | awk '{print strftime("%F_%T", systime()) "\tMOD\t" $1}'
         fi
 
         if [ "$CHANGES_FOUND" = true ]; then
@@ -122,8 +125,9 @@ case "$COMMAND" in
                     exit 0
                 fi
             fi
-            echo "Building pages since changes were detected."
+            echo -e "$(date +%F_%T)\tCHANGES DETECTED. STARTING BUILD"
             python3 src/main.py "/docs/" "$2"
+            echo -e "$(date +%F_%T)\tBUILD COMPLETED"
             mv "$TEMP_FILE" "$BASELINE_FILE"
         fi
         ;;

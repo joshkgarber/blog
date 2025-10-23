@@ -417,6 +417,39 @@ class TestSplitNodes(unittest.TestCase):
             new_nodes
         )
 
+    def test_text_to_textnodes_underscore_in_link_text(self):
+        text = "Link to file: [the_file.py](https://files.com/the_file.py)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("Link to file: ", TextType.PLAIN),
+                TextNode("the_file.py", TextType.LINK, "https://files.com/the_file.py"),
+            ],
+            new_nodes
+        )
+
+    def test_text_to_textnodes_code_in_link_text(self):
+        text = "Link to file: [`the_file.py`](https://files.com/the_file.py)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("Link to file: ", TextType.PLAIN),
+                TextNode("`the_file.py`", TextType.LINK, "https://files.com/the_file.py"),
+            ],
+            new_nodes
+        )
+
+    def test_text_to_textnodes_bold_in_link_text(self):
+        text = "Link to file: [**the_file.py**](https://files.com/the_file.py)"
+        new_nodes = text_to_textnodes(text)
+        self.assertListEqual(
+            [
+                TextNode("Link to file: ", TextType.PLAIN),
+                TextNode("**the_file.py**", TextType.LINK, "https://files.com/the_file.py"),
+            ],
+            new_nodes
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

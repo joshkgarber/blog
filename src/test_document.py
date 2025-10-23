@@ -298,6 +298,36 @@ static_text = "**This** is not bold, and _this_ is not italic."
         )
 
 
+    def test_bold_in_link_text(self):
+        md = "[**bold link**](https://example.com)"
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p><a href=\"https://example.com\"><span><b>bold link</b></span></a></p></div>"
+        )
+
+
+    def test_code_in_link_text(self):
+        md = "[`bold link`](https://example.com)"
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p><a href=\"https://example.com\"><span><code>bold link</code></span></a></p></div>"
+        )
+
+
+    def test_no_italic_in_link_text(self):
+        md = "[`the_file_name.py`](https://files.com/the_file_name.py)"
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p><a href=\"https://files.com/the_file_name.py\"><span><code>the_file_name.py</code></span></a></p></div>"
+        )
+
+
     def test_try_to_cover_everything(self):
         md = """
 # Hello World with a [Link](https://example.com)

@@ -137,23 +137,6 @@ class TestSplitNodes(unittest.TestCase):
             new_nodes
         )
 
-    def test_invalid(self):
-        node = TextNode("This is text with an invalid _italic part in it", TextType.PLAIN)
-        with self.assertRaises(Exception) as e:
-            new_nodes = split_nodes_delimiter([node], "_", TextType.ITALIC)
-        msg = str(e.exception)
-        self.assertEqual(msg, "invalid markdown syntax: ['This is text with an invalid ', 'italic part in it']")
-
-    def test_invalid_2(self):
-        nodes = [
-            TextNode("This is text with an invalid _italic part in it", TextType.PLAIN),
-            TextNode("This is text with an _italic part_ in it", TextType.PLAIN),
-        ]
-        with self.assertRaises(Exception) as e:
-            new_nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
-        msg = str(e.exception)
-        self.assertEqual(msg, "invalid markdown syntax: ['This is text with an invalid ', 'italic part in it']")
-
     def test_delim_bold_and_italic(self):
         node = TextNode("This is **bold** and this is __italic__", TextType.PLAIN)
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)

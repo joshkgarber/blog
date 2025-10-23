@@ -10,8 +10,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
         else:
             split_node = node.text.split(delimiter)
             n = len(split_node)
-            if n % 2 == 0:
-                raise Exception(f"invalid markdown syntax: {split_node}")
             for i in range(n):
                 if i % 2 == 0:
                     if split_node[i]:

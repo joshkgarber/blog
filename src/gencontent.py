@@ -11,6 +11,14 @@ def extract_title(markdown):
     return first_line[2:]
 
 
+def build_breadcrumbs(from_path, basepath):
+    file_path = Path(from_path)
+    parts = file_path.parts[1:-1]
+    path = Path("/".join(parts))
+    parts = [f"<a href=\"/{path}\">{part}</a>" for part in parts]
+    return " / ".join(parts)
+
+
 def generate_page(from_path, template_path, dest_path, basepath):
     logger.info(f"Generating page from {from_path} to {dest_path} using {template_path}")
     logger.info("Getting markdown content")
@@ -23,8 +31,10 @@ def generate_page(from_path, template_path, dest_path, basepath):
     content = markdown_to_html_node(markdown).to_html()
     logger.info("Getting page title")
     title = extract_title(markdown)
-    logger.info("Inserting title and page content into template")
+    breadcrumbs = build_breadcrumbs(from_path, basepath)
+    logger.info("Inserting title, breadcrumbs, and page content into template")
     template = template.replace("{{ Title }}", title)
+    template = template.replace("{{ Breadcrumbs }}", breadcrumbs)
     template = template.replace("{{ Content }}", content)
     template = template.replace('href="/', f'href="{basepath}')
     template = template.replace('src="/', f'src="{basepath}')

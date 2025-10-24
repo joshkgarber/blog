@@ -14,9 +14,15 @@ def extract_title(markdown):
 def build_breadcrumbs(from_path, basepath):
     file_path = Path(from_path)
     parts = file_path.parts[1:-1]
-    path = Path("/".join(parts))
-    parts = [f"<a href=\"/{path}\">{part}</a>" for part in parts]
-    return " / ".join(parts)
+    parts = (basepath,) + parts
+    breadcrumbs = []
+    for i, part in enumerate(parts):
+        bc_path = f"{'/'.join(parts[0:i+1])}"
+        if basepath == "/" and i > 0:
+            bc_path = bc_path[1:]
+        bc = f"<a href=\"{bc_path}\">{part}</a>"
+        breadcrumbs.append(bc)
+    return " / ".join(breadcrumbs)
 
 
 def generate_page(from_path, template_path, dest_path, basepath):

@@ -13,6 +13,7 @@ def extract_title(markdown):
 
 def build_breadcrumbs(from_path, basepath):
     file_path = Path(from_path)
+    basepath_clean = Path(basepath).parts
     parts = file_path.parts[1:-1]
     parts = (basepath,) + parts
     breadcrumbs = []
@@ -20,7 +21,10 @@ def build_breadcrumbs(from_path, basepath):
         bc_path = f"{'/'.join(parts[0:i+1])}"
         if basepath == "/" and i > 0:
             bc_path = bc_path[1:]
-        bc = f"<a href=\"{bc_path}\">{part}</a>"
+        if i == len(parts) - 1:
+            bc = part
+        else:
+            bc = f"<a href=\"{bc_path}\">{part}</a>"
         breadcrumbs.append(bc)
     return " / ".join(breadcrumbs)
 

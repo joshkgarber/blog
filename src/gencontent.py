@@ -12,19 +12,18 @@ def extract_title(markdown):
 
 
 def build_breadcrumbs(from_path, basepath):
-    file_path = Path(from_path)
-    basepath_clean = Path(basepath).parts
-    parts = file_path.parts[1:-1]
-    parts = (basepath,) + parts
+    parts = Path(basepath).parts + Path(from_path).parts[1:-1]
     breadcrumbs = []
     for i, part in enumerate(parts):
-        bc_path = f"{'/'.join(parts[0:i+1])}"
+        if i == len(parts) - 1:
+            breadcrumbs.append(part)
+            continue
+        bc_path = f"{'/'.join(parts[:i+1])}"
         if basepath == "/" and i > 0:
             bc_path = bc_path[1:]
-        if i == len(parts) - 1:
-            bc = part
-        else:
-            bc = f"<a href=\"{bc_path}\">{part}</a>"
+        if basepath != "/":
+            bc_path = "/" + bc_path
+        bc = f"<a href=\"{bc_path}\">{part}</a>"
         breadcrumbs.append(bc)
     return " / ".join(breadcrumbs)
 
@@ -44,10 +43,10 @@ def generate_page(from_path, template_path, dest_path, basepath):
     breadcrumbs = build_breadcrumbs(from_path, basepath)
     logger.info("Inserting title, breadcrumbs, and page content into template")
     template = template.replace("{{ Title }}", title)
-    template = template.replace("{{ Breadcrumbs }}", breadcrumbs)
     template = template.replace("{{ Content }}", content)
     template = template.replace('href="/', f'href="{basepath}')
     template = template.replace('src="/', f'src="{basepath}')
+    template = template.replace("{{ Breadcrumbs }}", breadcrumbs)
     logger.info(f"Writing {dest_path} to disk")
     path = os.path.dirname(dest_path)
     if not os.path.exists(path):

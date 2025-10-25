@@ -3,5 +3,6 @@ __pycache__/
 drafts/
 docs/
 content/
+public/
 .baseline_hashes
 cron.log

@@ -29,10 +29,10 @@ generate_hashes() {
 
 # Function to display the usage instructions
 show_usage() {
-    echo "Usage: $0 <init|check|reset> [dir_path_public]"
+    echo "Usage: $0 <init|check|reset> [basepath] [dir_path_public]"
     echo ""
     echo "  init    : Creates the initial baseline of hashes. Must be run first."
-    echo "  check   : Compares current files against the baseline to detect changes. dir_path_public must be provided."
+    echo "  check   : Compares current files against the baseline to detect changes, and build the site if changes are found. basepath and  dir_path_public must be provided."
     echo "  reset   : Overwrites the baseline with the current state, ignoring all changes."
     echo ""
     echo "Monitoring directory: $TARGET_DIR"
@@ -50,7 +50,8 @@ if [ -z "$1" ]; then
 fi
 
 COMMAND="$1"
-DIR_PATH_PUBLIC="$2"
+BASEPATH=$2
+DIR_PATH_PUBLIC="$3"
 
 case "$COMMAND" in
     init)
@@ -125,10 +126,15 @@ case "$COMMAND" in
                     exit 0
                 fi
             fi
-            echo -e "$(date +%F_%T)\tCHANGES DETECTED. STARTING BUILD"
-            python3 src/main.py "/docs/" "$2"
+            echo -e "$(date +%F_%T)\tSTARTING BUILD"
+            python3 src/main.py "$2" "$3"
             echo -e "$(date +%F_%T)\tBUILD COMPLETED"
             mv "$TEMP_FILE" "$BASELINE_FILE"
+            echo -e "$(date +%F_%T)\tBASELINE HASHES UPDATED"
+            echo -e "$(date +%F_%T)\tEXITING"
+        else
+            echo -e "$(date +%F_%T)\tNO CHANGES FOUND"
+            echo -e "$(date +%F_%T)\tEXITING"
         fi
         ;;
 

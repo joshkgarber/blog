@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-USAGE="Usage: ./build.sh <dir_path_public>"
+USAGE="Usage: ./build.sh <basepath> <dir_path_public>"
 
 # Validate usage
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
     echo "User Error: Incorrect number of arguments supplied."
     echo $USAGE
     exit 1
 fi
 
-DIR_PATH_PUBLIC=$1
+BASEPATH=$1
+DIR_PATH_PUBLIC=$2
 
 # Check common usage
 if [[ "$DIR_PATH_PUBLIC" != *"/docs" ]]; then
@@ -20,4 +21,4 @@ if [[ "$DIR_PATH_PUBLIC" != *"/docs" ]]; then
     fi
 fi
 
-python3 src/main.py "/docs/" "$1"
+python3 src/main.py "$1" "$2"

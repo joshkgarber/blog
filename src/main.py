@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 dir_path_static = "./static"
-default_dir_path_public = "./docs"
+default_dir_path_public = "./public"
 dir_path_content = "./content"
 template_path = "./template.html"
 default_basepath = "/"

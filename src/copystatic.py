@@ -1,10 +1,6 @@
 import os
 import shutil
-import logging
-
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
+from logconfig import logger
 
 
 def copy_files_recursive(source_dir_path, dest_dir_path):

@@ -1,11 +1,7 @@
-import logging
+from logconfig import logger
 from document import markdown_to_html_node
 import os
 from pathlib import Path
-
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 def extract_title(markdown):

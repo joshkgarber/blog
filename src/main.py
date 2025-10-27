@@ -1,13 +1,9 @@
 import os
 import shutil
-import logging
+from logconfig import logger
 from copystatic import copy_files_recursive
 from gencontent import generate_pages_recursive
 import sys
-
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 
 dir_path_static = "./static"

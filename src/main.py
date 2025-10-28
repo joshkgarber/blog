@@ -29,9 +29,7 @@ def main():
     if os.path.exists(dir_path_public):
         shutil.rmtree(dir_path_public)
     os.mkdir(dir_path_public)
-    logger.info("Copying static content from to public")
     copy_files_recursive(dir_path_static, dir_path_public)
-    logger.info("Generating content in public")
     generate_pages_recursive(dir_path_content, template_path, dir_path_public, basepath)
 
 

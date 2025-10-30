@@ -33,7 +33,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     files = os.listdir(dir_path_content)
     for file in files:
-        if Path(file).suffix != ".swp":
+        if Path(file).suffix not in [".swp", ".draft"]:
             from_path = os.path.join(dir_path_content, file)
             dest_path = os.path.join(dest_dir_path, file)
             if os.path.isfile(from_path):

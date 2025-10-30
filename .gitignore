@@ -6,3 +6,4 @@ content/
 public/
 .baseline_hashes
 cron.log
+TODO.md

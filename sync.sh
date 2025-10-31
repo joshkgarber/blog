@@ -21,7 +21,7 @@ if [[ "$SRC" != *"content"* ]]; then
     fi
 fi
 
-if [[ "$SRC" == *"content/"* ]]; then
+if [[ "$SRC" == *"/"* ]]; then
     read -r -p "Source contains a trailing slash like \"content/\". Are you sure? [Y/n] " SURE
     if [ "$SURE" == "n" ]; then
         echo "Cancelled."
@@ -29,8 +29,8 @@ if [[ "$SRC" == *"content/"* ]]; then
     fi
 fi
 
-if [[ "$DEST" != *":blog" ]]; then
-    read -r -p "Destination doesn't end with \":blog\". Are you sure? [Y/n] " SURE
+if [[ "$DEST" != *":docs" ]]; then
+    read -r -p "Destination doesn't end with \":docs\". Are you sure? [Y/n] " SURE
     if [ "$SURE" == "n" ]; then
         echo "Cancelled."
         exit 0
